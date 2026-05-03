@@ -10,53 +10,41 @@
         :root { 
             --primary: #1a5276; --secondary: #27ae60; --accent: #e67e22;
             --info: #2980b9; --danger: #c0392b; --sidebar-width: 250px; --bg: #f4f7f6; 
+            --purple: #8e44ad; --dark-blue: #2c3e50;
         }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); margin: 0; display: flex; color: #333; }
-        
-        /* Sidebar */
-        .sidebar { width: var(--sidebar-width); background: #2c3e50; color: white; height: 100vh; position: fixed; right: 0; top: 0; padding-top: 20px; z-index: 1000; }
+        .sidebar { width: var(--sidebar-width); background: var(--dark-blue); color: white; height: 100vh; position: fixed; right: 0; top: 0; padding-top: 20px; z-index: 1000; }
         .sidebar h2 { text-align: center; font-size: 1.1rem; padding: 0 10px 20px; border-bottom: 1px solid #34495e; }
         .sidebar ul { list-style: none; padding: 0; margin: 0; }
         .sidebar ul li { padding: 15px 20px; cursor: pointer; border-bottom: 1px solid #34495e; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
         .sidebar ul li:hover, .sidebar ul li.active { background: var(--primary); }
-
-        /* Content Area */
         .main-content { flex: 1; margin-right: var(--sidebar-width); padding: 20px; min-height: 100vh; box-sizing: border-box; }
         header { background: white; padding: 15px 25px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
-        
         .section-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 30px; display: none; }
         .section-box.active { display: block; }
-
-        /* Form Styling */
         .form-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 15px; }
         input, select, textarea { padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; font-family: inherit; }
-        
         button { padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
         .btn-save { background: var(--secondary); color: white; width: 100%; margin-bottom: 10px; }
-        .btn-excel { background: #1d6f42; color: white; display: inline-flex; align-items: center; gap: 5px; font-size: 0.8rem; }
-        .btn-edit { background: #f1c40f; color: #333; margin-left: 5px; padding: 5px 8px; }
-        .btn-delete { background: #e74c3c; color: white; padding: 5px 8px; }
-        
-        /* Table Styling */
+        .btn-update { background: var(--accent) !important; color: white; }
+        .btn-excel { background: #1d6f42; color: white; display: inline-flex; align-items: center; gap: 5px; font-size: 0.8rem; margin-bottom: 10px; }
+        .btn-delete { background: #e74c3c; color: white; padding: 5px 8px; margin-left: 2px; }
+        .btn-edit { background: #f1c40f; color: #333; padding: 5px 8px; }
         .table-container { overflow-x: auto; margin-top: 15px; }
-        table { width: 100%; border-collapse: collapse; background: white; font-size: 0.8rem; min-width: 800px; }
+        table { width: 100%; border-collapse: collapse; background: white; font-size: 0.8rem; min-width: 1000px; }
         th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-        th { background-color: var(--primary); color: white; position: sticky; top: 0; }
-
-        /* Dashboard Charts */
-        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
-        .chart-card { background: #fff; padding: 15px; border-radius: 10px; border-top: 4px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center; }
-
-        /* Tabs Styling */
-        .tabs { display: flex; gap: 5px; margin-bottom: 15px; border-bottom: 2px solid #eee; }
-        .tab-btn { padding: 10px 20px; cursor: pointer; background: #eee; border: none; border-radius: 5px 5px 0 0; font-weight: bold; }
+        th { background-color: var(--primary); color: white; }
+        .tabs { display: flex; gap: 5px; margin-bottom: 15px; border-bottom: 2px solid #eee; flex-wrap: wrap; }
+        .tab-btn { padding: 10px 15px; cursor: pointer; background: #eee; border: none; border-radius: 5px 5px 0 0; font-weight: bold; font-size: 0.9rem; }
         .tab-btn.active { background: var(--info); color: white; }
+        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .chart-card { background: #fff; padding: 15px; border-radius: 10px; border-top: 4px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
 
 <div class="sidebar">
-    <h2>مديرية التعليم - الرباط</h2>
+    <h2>المديرية الإقليمية - سيدي سليمان</h2>
     <ul>
         <li class="active" onclick="showSection('dashSection', this)">📊 لوحة القيادة</li>
         <li onclick="showSection('lawSection', this)">⚖️ الشؤون القانونية</li>
@@ -71,62 +59,45 @@
         <div id="dateNow" style="font-weight: bold; color: var(--primary);"></div>
     </header>
 
-    <!-- 1. DASHBOARD SECTION -->
+    <!-- DASHBOARD -->
     <div id="dashSection" class="section-box active">
         <div class="charts-grid">
-            <div class="chart-card" style="border-color: var(--primary);">
-                <h4>⚖️ مصلحة الشؤون القانونية</h4>
-                <canvas id="lawChart"></canvas>
-            </div>
-            <div class="chart-card" style="border-color: var(--secondary);">
-                <h4>🤝 اتفاقيات الشراكة</h4>
-                <canvas id="partChart"></canvas>
-            </div>
-            <div class="chart-card" style="border-color: var(--info);">
-                <h4>📢 أنشطة مصلحة التواصل</h4>
-                <canvas id="commChart"></canvas>
-            </div>
+            <div class="chart-card"><h4>⚖️ ملفات قانونية</h4><canvas id="lawChart"></canvas></div>
+            <div class="chart-card"><h4>📢 أنشطة التواصل</h4><canvas id="commChart"></canvas></div>
+            <div class="chart-card"><h4>🤝 الشراكات والتراخيص</h4><canvas id="otherChart"></canvas></div>
         </div>
     </div>
 
-    <!-- 2. LAW SECTION (3 SUB-FIELDS) -->
+    <!-- LAW SECTION -->
     <div id="lawSection" class="section-box">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom:15px;">
-            <h2>⚖️ تدبير الشؤون القانونية</h2>
-            <button class="btn-excel" onclick="exportToExcel('lawAllData')">تصدير التقارير (Excel)</button>
+        <h2>⚖️ تدبير الشؤون القانونية</h2>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('law', 'lawDispute', this)">المنازعات العامة</button>
+            <button class="tab-btn" onclick="switchTab('law', 'lawCourt', this)">تتبع الدعاوى القضائية</button>
+            <button class="tab-btn" onclick="switchTab('law', 'lawAttack', this)">الاعتداءات</button>
+            <button class="tab-btn" onclick="switchTab('law', 'lawAccident', this)">🚑 حوادث المصلحة</button>
+            <button class="tab-btn" onclick="switchTab('law', 'lawAssoc', this)">👨‍👩‍👧‍👦 جمعيات الآباء</button>
         </div>
         
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('law', 'dispute', this)">المنازعات العامة</button>
-            <button class="tab-btn" onclick="switchTab('law', 'court', this)">تتبع الدعاوى القضائية</button>
-            <button class="tab-btn" onclick="switchTab('law', 'attack', this)">الاعتداءات على المؤسسات</button>
-        </div>
-
-        <!-- Law: Disputes -->
         <div id="lawDispute">
             <form id="lawForm">
-                <input type="hidden" id="lawEditIndex" value="-1">
                 <div class="form-group">
                     <input type="date" id="lawDate" required>
+                    <input type="text" id="lawSubject" placeholder="موضوع الشكاية">
                     <input type="text" id="lawInst" placeholder="المؤسسة المعنية">
                     <select id="lawLevel"><option value="ابتدائي">ابتدائي</option><option value="إعدادي">إعدادي</option><option value="تأهيلي">تأهيلي</option></select>
                     <input type="text" id="lawPlaint" placeholder="المشتكي">
                     <input type="text" id="lawDefen" placeholder="المشتكى عليه">
+                    <input type="text" id="lawAction" placeholder="الإجراءات المتخذة">
                 </div>
-                <button type="submit" class="btn-save">حفظ ملف المنازعة +</button>
+                <button type="submit" id="btn-lawForm" class="btn-save">حفظ ملف المنازعة +</button>
             </form>
-            <div class="table-container">
-                <table id="lawTable">
-                    <thead><tr><th>الرقم</th><th>التاريخ</th><th>المؤسسة</th><th>السلك</th><th>المشتكي</th><th>المشتكى عليه</th><th>إجراءات</th></tr></thead>
-                    <tbody id="lawTableBody"></tbody>
-                </table>
-            </div>
+            <button class="btn-excel" onclick="exportTable('lawTable', 'المنازعات_العامة')">⬇️ تصدير Excel</button>
+            <div class="table-container"><table id="lawTable"><thead><tr><th>الرقم</th><th>التاريخ</th><th>الموضوع</th><th>المؤسسة</th><th>السلك</th><th>المشتكي</th><th>المشتكى عليه</th><th>الإجراءات</th><th>إجراءات</th></tr></thead><tbody id="lawTableBody"></tbody></table></div>
         </div>
-
-        <!-- Law: Court Cases -->
+        
         <div id="lawCourt" style="display:none;">
             <form id="courtForm">
-                <input type="hidden" id="courtEditIndex" value="-1">
                 <div class="form-group">
                     <input type="text" id="cPlaint" placeholder="المدعي" required>
                     <input type="text" id="cDefen" placeholder="المدعى عليه" required>
@@ -136,244 +107,281 @@
                     <input type="text" id="cStatus" placeholder="المآل">
                     <input type="text" id="cFinal" placeholder="القرار النهائي">
                 </div>
-                <button type="submit" class="btn-save" style="background:var(--info);">حفظ تتبع الدعوى +</button>
+                <button type="submit" id="btn-courtForm" class="btn-save">حفظ تتبع الدعوى +</button>
             </form>
-            <div class="table-container">
-                <table id="courtTable">
-                    <thead><tr><th>الرقم</th><th>المدعي</th><th>المدعى عليه</th><th>الموضوع</th><th>الإنابة</th><th>نوع المقال</th><th>المآل</th><th>القرار النهائي</th><th>إجراءات</th></tr></thead>
-                    <tbody id="courtTableBody"></tbody>
-                </table>
-            </div>
+            <div class="table-container"><table id="courtTable"><thead><tr><th>الرقم</th><th>المدعي</th><th>المدعى عليه</th><th>الموضوع</th><th>الإنابة</th><th>نوع المقال</th><th>المآل</th><th>القرار النهائي</th><th>إجراءات</th></tr></thead><tbody id="courtTableBody"></tbody></table></div>
         </div>
 
-        <!-- Law: Attacks -->
         <div id="lawAttack" style="display:none;">
             <form id="attackForm">
-                <input type="hidden" id="attackEditIndex" value="-1">
                 <div class="form-group">
                     <input type="text" id="atComm" placeholder="الجماعة" required>
                     <input type="text" id="atInst" placeholder="المؤسسة" required>
                     <select id="atLevel"><option value="ابتدائي">ابتدائي</option><option value="إعدادي">إعدادي</option><option value="تأهيلي">تأهيلي</option></select>
                     <input type="date" id="atDate" required>
                     <input type="text" id="atType" placeholder="نوعية الاعتداء">
+                    <input type="text" id="atAction" placeholder="الإجراء المتخذ">
                 </div>
-                <input type="text" id="atAction" placeholder="الإجراء المتخذ" style="margin-bottom:10px;">
-                <button type="submit" class="btn-save" style="background:var(--danger);">حفظ ملف الاعتداء +</button>
+                <button type="submit" id="btn-attackForm" class="btn-save">حفظ ملف الاعتداء +</button>
             </form>
-            <div class="table-container">
-                <table id="attackTable">
-                    <thead><tr><th>الرقم</th><th>الجماعة</th><th>المؤسسة</th><th>السلك</th><th>التاريخ</th><th>نوعية الاعتداء</th><th>الإجراء المتخذ</th><th>إجراءات</th></tr></thead>
-                    <tbody id="attackTableBody"></tbody>
-                </table>
-            </div>
+            <div class="table-container"><table id="attackTable"><thead><tr><th>الرقم</th><th>الجماعة</th><th>المؤسسة</th><th>السلك</th><th>التاريخ</th><th>نوعية الاعتداء</th><th>الإجراء المتخذ</th><th>إجراءات</th></tr></thead><tbody id="attackTableBody"></tbody></table></div>
+        </div>
+
+        <div id="lawAccident" style="display:none;">
+            <form id="accidentForm">
+                <div class="form-group">
+                    <input type="text" id="accName" placeholder="الاسم والنسب" required>
+                    <input type="text" id="accPPR" placeholder="رقم التأجير" required>
+                    <input type="text" id="accWork" placeholder="مقر العمل">
+                    <input type="date" id="accDate" required>
+                    <input type="text" id="accPlace" placeholder="مكان الحادثة">
+                    <input type="text" id="accAction" placeholder="الإجراء المتخذ">
+                </div>
+                <textarea id="accNotes" placeholder="ملاحظات"></textarea>
+                <button type="submit" id="btn-accidentForm" class="btn-save">حفظ حادثة مصلحة +</button>
+            </form>
+            <div class="table-container"><table id="accidentTable"><thead><tr><th>ر.ت</th><th>الاسم والنسب</th><th>رقم التأجير</th><th>مقر العمل</th><th>تاريخ الحادثة</th><th>مكان الحادثة</th><th>الإجراء المتخذ</th><th>ملاحظات</th><th>إجراءات</th></tr></thead><tbody id="accidentTableBody"></tbody></table></div>
+        </div>
+
+        <div id="lawAssoc" style="display:none;">
+            <form id="assocForm">
+                <div class="form-group">
+                    <input type="text" id="asInst" placeholder="المؤسسة" required>
+                    <select id="asLegal"><option value="قانونية">قانونية</option><option value="غير قانونية">غير قانونية</option><option value="في طور التجديد">في طور التجديد</option></select>
+                    <input type="text" id="asName" placeholder="الجمعية">
+                    <input type="date" id="asDate">
+                    <input type="text" id="asPres" placeholder="الرئيس">
+                    <input type="text" id="asSec" placeholder="الأمين">
+                </div>
+                <textarea id="asNotes" placeholder="ملاحظات"></textarea>
+                <button type="submit" id="btn-assocForm" class="btn-save">حفظ بيانات الجمعية +</button>
+            </form>
+            <div class="table-container"><table id="assocTable"><thead><tr><th>ر.ت</th><th>المؤسسة</th><th>قانونية الجمعية</th><th>الجمعية</th><th>تاريخ الوصل النهائي</th><th>الرئيس</th><th>الأمين</th><th>ملاحظات</th><th>إجراءات</th></tr></thead><tbody id="assocTableBody"></tbody></table></div>
         </div>
     </div>
 
-    <!-- 3. PARTNERSHIP SECTION -->
+    <!-- PARTNERSHIP -->
     <div id="partnerSection" class="section-box">
-        <h2>🤝 اتفاقيات الشراكة</h2>
+        <h2>🤝 تدبير الشراكات</h2>
         <form id="partForm">
-            <input type="hidden" id="partEditIndex" value="-1">
             <div class="form-group">
                 <input type="text" id="pSides" placeholder="أطراف الشراكة" required>
                 <input type="text" id="pType" placeholder="نوع الشراكة">
                 <input type="text" id="pSubj" placeholder="الموضوع">
-                <input type="date" id="pStart">
-                <input type="date" id="pEnd">
+                <input type="date" id="pStart" title="تاريخ البداية">
+                <input type="date" id="pEnd" title="تاريخ النهاية">
             </div>
-            <button type="submit" class="btn-save">حفظ اتفاقية الشراكة +</button>
+            <button type="submit" id="btn-partForm" class="btn-save">حفظ اتفاقية الشراكة +</button>
         </form>
-        <div class="table-container">
-            <table id="partTable">
-                <thead><tr><th>الرقم</th><th>الأطراف</th><th>النوع</th><th>الموضوع</th><th>البداية</th><th>النهاية</th><th>إجراءات</th></tr></thead>
-                <tbody id="partTableBody"></tbody>
-            </table>
-        </div>
+        <div class="table-container"><table id="partTable"><thead><tr><th>الرقم</th><th>الأطراف</th><th>النوع</th><th>الموضوع</th><th>البداية</th><th>النهاية</th><th>إجراءات</th></tr></thead><tbody id="partTableBody"></tbody></table></div>
     </div>
 
-    <!-- 4. COMMUNICATION SECTION (3 SUB-FIELDS) -->
+    <!-- COMMUNICATION SECTION -->
     <div id="commSection" class="section-box">
-        <h2>📢 مصلحة التواصل والشراكة</h2>
+        <h2>📢 مجال التواصل</h2>
         <div class="tabs">
             <button class="tab-btn active" onclick="switchTab('comm', 'cGen', this)">تواصل عام</button>
             <button class="tab-btn" onclick="switchTab('comm', 'cDir', this)">أنشطة المدير</button>
             <button class="tab-btn" onclick="switchTab('comm', 'cRel', this)">العلاقة مع الشركاء</button>
+            <button class="tab-btn" onclick="switchTab('comm', 'cLic', this)">📜 تتبع التراخيص</button>
+            <button class="tab-btn" onclick="switchTab('comm', 'cInfo', this)">ℹ️ الحصول على المعلومة</button>
         </div>
-
+        
         <div id="cGen">
-            <form id="commGForm"><input type="hidden" id="cgIdx" value="-1"><div class="form-group"><input type="date" id="cgDate" required><input type="text" id="cgTopic" placeholder="الموضوع"></div><button type="submit" class="btn-save">حفظ تواصل عام +</button></form>
+            <form id="commGForm"><div class="form-group"><input type="date" id="cgDate" required><input type="text" id="cgTopic" placeholder="الموضوع"></div><button type="submit" id="btn-commGForm" class="btn-save">حفظ تواصل عام +</button></form>
             <table id="cgTable"><thead><tr><th>الرقم</th><th>التاريخ</th><th>الموضوع</th><th>إجراءات</th></tr></thead><tbody id="cgTableBody"></tbody></table>
         </div>
-
+        
+        <!-- تعديل قسم أنشطة المدير لإضافة موضوع النشاط -->
         <div id="cDir" style="display:none;">
-            <form id="dirForm"><input type="hidden" id="cdIdx" value="-1"><div class="form-group"><input type="date" id="cdDate" required><input type="text" id="cdTopic" placeholder="النشاط"></div><button type="submit" class="btn-save">حفظ نشاط المدير +</button></form>
-            <table id="cdTable"><thead><tr><th>الرقم</th><th>التاريخ</th><th>النشاط</th><th>إجراءات</th></tr></thead><tbody id="cdTableBody"></tbody></table>
-        </div>
-
-        <!-- Communication: Partner Relations (ALL FIELDS RESTORED) -->
-        <div id="cRel" style="display:none;">
-            <form id="relForm">
-                <input type="hidden" id="crIdx" value="-1">
+            <form id="dirForm">
                 <div class="form-group">
-                    <input type="date" id="crDate" required>
-                    <input type="text" id="crPartner" placeholder="الشريك" required>
-                    <input type="text" id="crTopic" placeholder="موضوع اللقاء" required>
-                    <input type="text" id="crRecom" placeholder="التوصيات">
+                    <input type="date" id="cdDate" required>
+                    <input type="text" id="cdTopic" placeholder="نوع النشاط (لقاء، ندوة...)" required>
+                    <input type="text" id="cdSubject" placeholder="موضوع النشاط" required>
                 </div>
-                <button type="submit" class="btn-save" style="background:var(--primary);">حفظ لقاء الشركاء +</button>
+                <button type="submit" id="btn-dirForm" class="btn-save">حفظ نشاط المدير +</button>
             </form>
             <div class="table-container">
-                <table id="crTable">
-                    <thead><tr><th>الرقم الترتيبي</th><th>التاريخ</th><th>الشريك</th><th>موضوع اللقاء</th><th>التوصيات</th><th>إجراءات</th></tr></thead>
-                    <tbody id="crTableBody"></tbody>
+                <table id="cdTable">
+                    <thead>
+                        <tr>
+                            <th>الرقم</th>
+                            <th>التاريخ</th>
+                            <th>نوع النشاط</th>
+                            <th>موضوع النشاط</th>
+                            <th>إجراءات</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cdTableBody"></tbody>
                 </table>
             </div>
+        </div>
+        
+        <div id="cRel" style="display:none;">
+            <form id="relForm"><div class="form-group"><input type="date" id="crDate" required><input type="text" id="crPartner" placeholder="الشريك"><input type="text" id="crTopic" placeholder="الموضوع"><input type="text" id="crRecom" placeholder="التوصيات"></div><button type="submit" id="btn-relForm" class="btn-save">حفظ لقاء الشركاء +</button></form>
+            <table id="crTable"><thead><tr><th>الرقم</th><th>التاريخ</th><th>الشريك</th><th>الموضوع</th><th>التوصيات</th><th>إجراءات</th></tr></thead><tbody id="crTableBody"></tbody></table>
+        </div>
+        
+        <div id="cLic" style="display:none;">
+            <form id="licForm"><div class="form-group"><input type="text" id="licSubject" placeholder="الموضوع" required><input type="text" id="licOwner" placeholder="الصاحب"><input type="date" id="licDateIn"><input type="text" id="licMethod" placeholder="الوسيلة"><input type="text" id="licAction" placeholder="الإجراء"><input type="date" id="licDateOut"></div><textarea id="licNotes" placeholder="ملاحظات"></textarea><button type="submit" id="btn-licForm" class="btn-save">حفظ الترخيص +</button></form>
+            <table id="licTable"><thead><tr><th>ر.ت</th><th>الموضوع</th><th>الصاحب</th><th>الإيداع</th><th>الوسيلة</th><th>الإجراء</th><th>التسليم</th><th>ملاحظات</th><th>إجراءات</th></tr></thead><tbody id="licTableBody"></tbody></table>
+        </div>
+        
+        <div id="cInfo" style="display:none;">
+            <form id="infoForm"><div class="form-group"><input type="text" id="infoSubject" placeholder="الموضوع" required><input type="text" id="infoOwner" placeholder="صاحب الطلب"><input type="date" id="infoDateIn"><input type="text" id="infoMethod" placeholder="الوسيلة"><input type="text" id="infoAction" placeholder="الإجراء"><input type="date" id="infoDateOut"></div><textarea id="infoNotes" placeholder="ملاحظات"></textarea><button type="submit" id="btn-infoForm" class="btn-save">حفظ طلب المعلومة +</button></form>
+            <table id="infoTable"><thead><tr><th>ر.ت</th><th>الموضوع</th><th>الصاحب</th><th>الإيداع</th><th>الوسيلة</th><th>الإجراء</th><th>التسليم</th><th>ملاحظات</th><th>إجراءات</th></tr></thead><tbody id="infoTableBody"></tbody></table>
         </div>
     </div>
 </div>
 
 <script>
-    // --- Data Storage Helpers ---
     const getDB = (k) => JSON.parse(localStorage.getItem(k)) || [];
     const saveDB = (k, d) => localStorage.setItem(k, JSON.stringify(d));
+    let editIndex = -1; 
     let charts = {};
 
-    // --- Charts Logic ---
+    function exportTable(id, name) { const t = document.getElementById(id); const wb = XLSX.utils.table_to_book(t); XLSX.writeFile(wb, `${name}.xlsx`); }
+
     function initCharts() {
-        const createCfg = (label, color) => ({
+        const createChart = (id, label, color) => new Chart(document.getElementById(id), {
             type: 'bar',
-            data: { labels: [label], datasets: [{ label: 'العدد الحالي', data: [0], backgroundColor: color }] },
-            options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+            data: { labels: [], datasets: [{ label: label, data: [], backgroundColor: color }] },
+            options: { responsive: true, scales: { y: { beginAtZero: true } } }
         });
-        charts.law = new Chart(document.getElementById('lawChart'), createCfg('القضايا القانونية', '#1a5276'));
-        charts.part = new Chart(document.getElementById('partChart'), createCfg('الشراكات', '#27ae60'));
-        charts.comm = new Chart(document.getElementById('commChart'), createCfg('أنشطة التواصل', '#2980b9'));
+
+        charts.law = createChart('lawChart', 'توزيع الملفات القانونية', '#1a5276');
+        charts.comm = createChart('commChart', 'أنشطة التواصل', '#2980b9');
+        charts.other = createChart('otherChart', 'إحصائيات متنوعة', '#27ae60');
     }
 
-    function updateStats() {
-        const l = getDB('L_Disp').length + getDB('L_Court').length + getDB('L_Atk').length;
-        const p = getDB('P_Data').length;
-        const c = getDB('C_Gen').length + getDB('C_Dir').length + getDB('C_Rel').length;
-        if(charts.law) { charts.law.data.datasets[0].data = [l]; charts.law.update(); }
-        if(charts.part) { charts.part.data.datasets[0].data = [p]; charts.part.update(); }
-        if(charts.comm) { charts.comm.data.datasets[0].data = [c]; charts.comm.update(); }
+    const actions = (k, x) => `<td><button class="btn-edit" onclick="edit('${k}',${x})">📝</button><button class="btn-delete" onclick="del('${k}',${x})">🗑️</button></td>`;
+
+    function renderAll() {
+        const draw = (k, id, t) => { const el = document.getElementById(id); if(el) el.innerHTML = getDB(k).map((i, x) => t(i, x)).join(''); };
+        
+        draw('L_Disp', 'lawTableBody', (i, x) => `<tr><td>${x+1}</td><td>${i.date}</td><td>${i.subject}</td><td>${i.inst}</td><td>${i.level}</td><td>${i.plaint}</td><td>${i.defen}</td><td>${i.action}</td>${actions('L_Disp', x)}</tr>`);
+        draw('L_Court', 'courtTableBody', (i, x) => `<tr><td>${x+1}</td><td>${i.plaint}</td><td>${i.defen}</td><td>${i.subj}</td><td>${i.rep}</td><td>${i.type}</td><td>${i.status}</td><td>${i.final}</td>${actions('L_Court', x)}</tr>`);
+        draw('L_Atk', 'attackTableBody', (i, x) => `<tr><td>${x+1}</td><td>${i.comm}</td><td>${i.inst}</td><td>${i.level}</td><td>${i.date}</td><td>${i.type}</td><td>${i.action}</td>${actions('L_Atk', x)}</tr>`);
+        draw('L_Acc', 'accidentTableBody', (i, x) => `<tr><td>${x+1}</td><td>${i.name}</td><td>${i.ppr}</td><td>${i.work}</td><td>${i.date}</td><td>${i.place}</td><td>${i.action}</td><td>${i.notes}</td>${actions('L_Acc', x)}</tr>`);
+        draw('L_Assoc', 'assocTableBody', (i, x) => `<tr><td>${x+1}</td><td>${i.inst}</td><td>${i.legal}</td><td>${i.name}</td><td>${i.date}</td><td>${i.pres}</td><td>${i.sec}</td><td>${i.notes}</td>${actions('L_Assoc', x)}</tr>`);
+        draw('P_Data', 'partTableBody', (i, x) => `<tr><td>${x+1}</td><td>${i.sides}</td><td>${i.type}</td><td>${i.subj}</td><td>${i.start}</td><td>${i.end}</td>${actions('P_Data', x)}</tr>`);
+        draw('C_Gen', 'cgTableBody', (i, x) => `<tr><td>${x+1}</td><td>${i.date}</td><td>${i.topic}</td>${actions('C_Gen', x)}</tr>`);
+        
+        // تعديل العرض ليشمل موضوع النشاط
+        draw('C_Dir', 'cdTableBody', (i, x) => `<tr><td>${x+1}</td><td>${i.date}</td><td>${i.topic}</td><td>${i.subject || ''}</td>${actions('C_Dir', x)}</tr>`);
+        
+        draw('C_Rel', 'crTableBody', (i, x) => `<tr><td>${x+1}</td><td>${i.date}</td><td>${i.partner}</td><td>${i.topic}</td><td>${i.recom}</td>${actions('C_Rel', x)}</tr>`);
+        draw('C_Lic', 'licTableBody', (i, x) => `<tr><td>${x+1}</td><td>${i.subject}</td><td>${i.owner}</td><td>${i.dateIn}</td><td>${i.method}</td><td>${i.action}</td><td>${i.dateOut}</td><td>${i.notes}</td>${actions('C_Lic', x)}</tr>`);
+        draw('C_Info', 'infoTableBody', (i, x) => `<tr><td>${x+1}</td><td>${i.subject}</td><td>${i.owner}</td><td>${i.dateIn}</td><td>${i.method}</td><td>${i.action}</td><td>${i.dateOut}</td><td>${i.notes}</td>${actions('C_Info', x)}</tr>`);
+
+        const st = (k) => getDB(k).length;
+        
+        charts.law.data.labels = ['منازعات', 'دعاوى', 'اعتداءات', 'حوادث', 'جمعيات'];
+        charts.law.data.datasets[0].data = [st('L_Disp'), st('L_Court'), st('L_Atk'), st('L_Acc'), st('L_Assoc')];
+        charts.law.update();
+
+        charts.comm.data.labels = ['عام', 'مدير', 'شركاء'];
+        charts.comm.data.datasets[0].data = [st('C_Gen'), st('C_Dir'), st('C_Rel')];
+        charts.comm.update();
+
+        charts.other.data.labels = ['شراكات', 'تراخيص', 'معلومات'];
+        charts.other.data.datasets[0].data = [st('P_Data'), st('C_Lic'), st('C_Info')];
+        charts.other.update();
     }
 
-    // --- Universal Table Renderer ---
-    function render(key, bodyId, tpl) {
-        const data = getDB(key); const body = document.getElementById(bodyId);
-        body.innerHTML = data.map((item, idx) => tpl(item, idx)).join('');
-        updateStats();
+    function edit(key, x) {
+        const item = getDB(key)[x]; editIndex = x; 
+        let formId = "";
+        
+        const mapFields = (prefix, fields, itemPrefix = "") => {
+            fields.forEach(f => {
+                const el = document.getElementById(prefix + f);
+                if(el) el.value = item[itemPrefix + f.toLowerCase()] || item[f.toLowerCase()] || "";
+            });
+        };
+
+        if(key === 'L_Disp') { mapFields('law', ['Date','Subject','Inst','Level','Plaint','Defen','Action']); formId="btn-lawForm"; }
+        else if(key === 'L_Court') { mapFields('c', ['Plaint','Defen','Subj','Rep','Type','Status','Final']); formId="btn-courtForm"; }
+        else if(key === 'L_Atk') { mapFields('at', ['Comm','Inst','Level','Date','Type','Action']); formId="btn-attackForm"; }
+        else if(key === 'L_Acc') { mapFields('acc', ['Name','PPR','Work','Date','Place','Action','Notes']); formId="btn-accidentForm"; }
+        else if(key === 'L_Assoc') { mapFields('as', ['Inst','Legal','Name','Date','Pres','Sec','Notes']); formId="btn-assocForm"; }
+        else if(key === 'P_Data') { mapFields('p', ['Sides','Type','Subj','Start','End']); formId="btn-partForm"; }
+        else if(key === 'C_Gen') { mapFields('cg', ['Date','Topic']); formId="btn-commGForm"; }
+        
+        // تعديل منطق التعديل لنشاط المدير
+        else if(key === 'C_Dir') { 
+            document.getElementById('cdDate').value = item.date;
+            document.getElementById('cdTopic').value = item.topic;
+            document.getElementById('cdSubject').value = item.subject || "";
+            formId="btn-dirForm"; 
+        }
+        
+        else if(key === 'C_Rel') { mapFields('cr', ['Date','Partner','Topic','Recom']); formId="btn-relForm"; }
+        else if(key === 'C_Lic') { mapFields('lic', ['Subject','Owner','DateIn','Method','Action','DateOut','Notes']); formId="btn-licForm"; }
+        else if(key === 'C_Info') { mapFields('info', ['Subject','Owner','DateIn','Method','Action','DateOut','Notes']); formId="btn-infoForm"; }
+
+        const btn = document.getElementById(formId);
+        if(btn) { btn.innerText = "تحديث البيانات 📝"; btn.classList.add('btn-update'); }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // --- Templates ---
-    const t_law = (i, x) => `<tr><td>${x+1}</td><td>${i.date}</td><td>${i.inst}</td><td>${i.level}</td><td>${i.plaint}</td><td>${i.defen}</td><td><button class="btn-edit" onclick="editLaw(${x})">📝</button><button class="btn-delete" onclick="del('L_Disp',${x})">🗑️</button></td></tr>`;
-    const t_court = (i, x) => `<tr><td>${x+1}</td><td>${i.plaint}</td><td>${i.defen}</td><td>${i.subj}</td><td>${i.rep}</td><td>${i.type}</td><td>${i.status}</td><td>${i.final}</td><td><button class="btn-edit" onclick="editCourt(${x})">📝</button><button class="btn-delete" onclick="del('L_Court',${x})">🗑️</button></td></tr>`;
-    const t_atk = (i, x) => `<tr><td>${x+1}</td><td>${i.comm}</td><td>${i.inst}</td><td>${i.level}</td><td>${i.date}</td><td>${i.type}</td><td>${i.action}</td><td><button class="btn-edit" onclick="editAtk(${x})">📝</button><button class="btn-delete" onclick="del('L_Atk',${x})">🗑️</button></td></tr>`;
-    const t_part = (i, x) => `<tr><td>${x+1}</td><td>${i.sides}</td><td>${i.type}</td><td>${i.subj}</td><td>${i.start}</td><td>${i.end}</td><td><button class="btn-edit" onclick="editPart(${x})">📝</button><button class="btn-delete" onclick="del('P_Data',${x})">🗑️</button></td></tr>`;
-    const t_rel = (i, x) => `<tr><td>${x+1}</td><td>${i.date}</td><td>${i.partner}</td><td>${i.topic}</td><td>${i.recom}</td><td><button class="btn-edit" onclick="editRel(${x})">📝</button><button class="btn-delete" onclick="del('C_Rel',${x})">🗑️</button></td></tr>`;
-    const t_gen = (i, x) => `<tr><td>${x+1}</td><td>${i.date}</td><td>${i.topic}</td><td><button class="btn-edit" onclick="editGen(${x})">📝</button><button class="btn-delete" onclick="del('C_Gen',${x})">🗑️</button></td></tr>`;
-    const t_dir = (i, x) => `<tr><td>${x+1}</td><td>${i.date}</td><td>${i.topic}</td><td><button class="btn-edit" onclick="editDir(${x})">📝</button><button class="btn-delete" onclick="del('C_Dir',${x})">🗑️</button></td></tr>`;
-
-    // --- Form Submissions ---
-    document.getElementById('relForm').onsubmit = (e) => {
-        e.preventDefault(); const d = getDB('C_Rel'); const idx = document.getElementById('crIdx').value;
-        const obj = {date:document.getElementById('crDate').value, partner:document.getElementById('crPartner').value, topic:document.getElementById('crTopic').value, recom:document.getElementById('crRecom').value};
-        if(idx==="-1") d.push(obj); else d[idx] = obj;
-        saveDB('C_Rel', d); render('C_Rel', 'crTableBody', t_rel); e.target.reset(); document.getElementById('crIdx').value="-1";
-    };
-
-    document.getElementById('lawForm').onsubmit = (e) => {
-        e.preventDefault(); const d = getDB('L_Disp'); const idx = document.getElementById('lawEditIndex').value;
-        const obj = {date:document.getElementById('lawDate').value, inst:document.getElementById('lawInst').value, level:document.getElementById('lawLevel').value, plaint:document.getElementById('lawPlaint').value, defen:document.getElementById('lawDefen').value};
-        if(idx==="-1") d.push(obj); else d[idx] = obj;
-        saveDB('L_Disp', d); render('L_Disp', 'lawTableBody', t_law); e.target.reset();
-    };
-
-    document.getElementById('courtForm').onsubmit = (e) => {
-        e.preventDefault(); const d = getDB('L_Court'); const idx = document.getElementById('courtEditIndex').value;
-        const obj = {plaint:document.getElementById('cPlaint').value, defen:document.getElementById('cDefen').value, subj:document.getElementById('cSubj').value, rep:document.getElementById('cRep').value, type:document.getElementById('cType').value, status:document.getElementById('cStatus').value, final:document.getElementById('cFinal').value};
-        if(idx==="-1") d.push(obj); else d[idx] = obj;
-        saveDB('L_Court', d); render('L_Court', 'courtTableBody', t_court); e.target.reset();
-    };
-
-    document.getElementById('attackForm').onsubmit = (e) => {
-        e.preventDefault(); const d = getDB('L_Atk'); const idx = document.getElementById('attackEditIndex').value;
-        const obj = {comm:document.getElementById('atComm').value, inst:document.getElementById('atInst').value, level:document.getElementById('atLevel').value, date:document.getElementById('atDate').value, type:document.getElementById('atType').value, action:document.getElementById('atAction').value};
-        if(idx==="-1") d.push(obj); else d[idx] = obj;
-        saveDB('L_Atk', d); render('L_Atk', 'attackTableBody', t_atk); e.target.reset();
-    };
-
-    document.getElementById('partForm').onsubmit = (e) => {
-        e.preventDefault(); const d = getDB('P_Data'); const idx = document.getElementById('partEditIndex').value;
-        const obj = {sides:document.getElementById('pSides').value, type:document.getElementById('pType').value, subj:document.getElementById('pSubj').value, start:document.getElementById('pStart').value, end:document.getElementById('pEnd').value};
-        if(idx==="-1") d.push(obj); else d[idx] = obj;
-        saveDB('P_Data', d); render('P_Data', 'partTableBody', t_part); e.target.reset();
-    };
-
-    document.getElementById('commGForm').onsubmit = (e) => {
-        e.preventDefault(); const d = getDB('C_Gen'); const idx = document.getElementById('cgIdx').value;
-        const obj = {date:document.getElementById('cgDate').value, topic:document.getElementById('cgTopic').value};
-        if(idx==="-1") d.push(obj); else d[idx] = obj;
-        saveDB('C_Gen', d); render('C_Gen', 'cgTableBody', t_gen); e.target.reset();
-    };
-
-    document.getElementById('dirForm').onsubmit = (e) => {
-        e.preventDefault(); const d = getDB('C_Dir'); const idx = document.getElementById('cdIdx').value;
-        const obj = {date:document.getElementById('cdDate').value, topic:document.getElementById('cdTopic').value};
-        if(idx==="-1") d.push(obj); else d[idx] = obj;
-        saveDB('C_Dir', d); render('C_Dir', 'cdTableBody', t_dir); e.target.reset();
-    };
-
-    // --- Logic Helpers ---
-    function switchTab(section, id, btn) {
-        const parent = btn.parentElement;
-        parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        if(section === 'law') {
-            ['lawDispute', 'lawCourt', 'lawAttack'].forEach(d => document.getElementById(d).style.display = 'none');
-            document.getElementById(id==='dispute'?'lawDispute':id==='court'?'lawCourt':'lawAttack').style.display = 'block';
+    function save(e, k, obj, bId, txt) {
+        e.preventDefault(); 
+        let d = getDB(k);
+        if(editIndex > -1) { 
+            d[editIndex] = obj; 
+            editIndex = -1; 
+            const b = document.getElementById(bId); 
+            b.innerText = txt; 
+            b.classList.remove('btn-update'); 
         } else {
-            ['cGen', 'cDir', 'cRel'].forEach(d => document.getElementById(d).style.display = 'none');
-            document.getElementById(id).style.display = 'block';
+            d.push(obj);
         }
+        saveDB(k, d); 
+        renderAll(); 
+        e.target.reset();
     }
 
-    function showSection(id, el) {
-        document.querySelectorAll('.section-box').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-        document.querySelectorAll('.sidebar ul li').forEach(li => li.classList.remove('active'));
-        el.classList.add('active');
-        document.getElementById('currentTitle').innerText = el.innerText;
+    document.getElementById('lawForm').onsubmit = (e) => save(e,'L_Disp',{date:document.getElementById('lawDate').value, subject:document.getElementById('lawSubject').value, inst:document.getElementById('lawInst').value, level:document.getElementById('lawLevel').value, plaint:document.getElementById('lawPlaint').value, defen:document.getElementById('lawDefen').value, action:document.getElementById('lawAction').value}, 'btn-lawForm','حفظ ملف المنازعة +');
+    document.getElementById('courtForm').onsubmit = (e) => save(e,'L_Court',{plaint:document.getElementById('cPlaint').value, defen:document.getElementById('cDefen').value, subj:document.getElementById('cSubj').value, rep:document.getElementById('cRep').value, type:document.getElementById('cType').value, status:document.getElementById('cStatus').value, final:document.getElementById('cFinal').value}, 'btn-courtForm','حفظ تتبع الدعوى +');
+    document.getElementById('attackForm').onsubmit = (e) => save(e,'L_Atk', {comm:document.getElementById('atComm').value, inst:document.getElementById('atInst').value, level:document.getElementById('atLevel').value, date:document.getElementById('atDate').value, type:document.getElementById('atType').value, action:document.getElementById('atAction').value}, 'btn-attackForm','حفظ ملف الاعتداء +');
+    document.getElementById('accidentForm').onsubmit = (e) => save(e,'L_Acc', {name:document.getElementById('accName').value, ppr:document.getElementById('accPPR').value, work:document.getElementById('accWork').value, date:document.getElementById('accDate').value, place:document.getElementById('accPlace').value, action:document.getElementById('accAction').value, notes:document.getElementById('accNotes').value}, 'btn-accidentForm','حفظ حادثة مصلحة +');
+    document.getElementById('assocForm').onsubmit = (e) => save(e,'L_Assoc', {inst:document.getElementById('asInst').value, legal:document.getElementById('asLegal').value, name:document.getElementById('asName').value, date:document.getElementById('asDate').value, pres:document.getElementById('asPres').value, sec:document.getElementById('asSec').value, notes:document.getElementById('asNotes').value}, 'btn-assocForm','حفظ بيانات الجمعية +');
+    document.getElementById('partForm').onsubmit = (e) => save(e,'P_Data',{sides:document.getElementById('pSides').value, type:document.getElementById('pType').value, subj:document.getElementById('pSubj').value, start:document.getElementById('pStart').value, end:document.getElementById('pEnd').value}, 'btn-partForm','حفظ اتفاقية الشراكة +');
+    document.getElementById('commGForm').onsubmit = (e) => save(e,'C_Gen',{date:document.getElementById('cgDate').value, topic:document.getElementById('cgTopic').value}, 'btn-commGForm','حفظ تواصل عام +');
+    
+    // تعديل مستمع الحفظ لنشاط المدير
+    document.getElementById('dirForm').onsubmit = (e) => save(e,'C_Dir',{
+        date:document.getElementById('cdDate').value, 
+        topic:document.getElementById('cdTopic').value,
+        subject:document.getElementById('cdSubject').value
+    }, 'btn-dirForm','حفظ نشاط المدير +');
+    
+    document.getElementById('relForm').onsubmit = (e) => save(e,'C_Rel',{date:document.getElementById('crDate').value, partner:document.getElementById('crPartner').value, topic:document.getElementById('crTopic').value, recom:document.getElementById('crRecom').value}, 'btn-relForm','حفظ لقاء الشركاء +');
+    document.getElementById('licForm').onsubmit = (e) => save(e,'C_Lic',{subject:document.getElementById('licSubject').value, owner:document.getElementById('licOwner').value, dateIn:document.getElementById('licDateIn').value, method:document.getElementById('licMethod').value, action:document.getElementById('licAction').value, dateOut:document.getElementById('licDateOut').value, notes:document.getElementById('licNotes').value}, 'btn-licForm','حفظ الترخيص +');
+    document.getElementById('infoForm').onsubmit = (e) => save(e,'C_Info', {subject:document.getElementById('infoSubject').value, owner:document.getElementById('infoOwner').value, dateIn:document.getElementById('infoDateIn').value, method:document.getElementById('infoMethod').value, action:document.getElementById('infoAction').value, dateOut:document.getElementById('infoDateOut').value, notes:document.getElementById('infoNotes').value}, 'btn-infoForm','حفظ طلب المعلومة +');
+
+    function del(k, x) { if(confirm('هل أنت متأكد من الحذف؟')){ let d=getDB(k); d.splice(x,1); saveDB(k,d); renderAll(); } }
+    function showSection(id, el) { 
+        document.querySelectorAll('.section-box').forEach(s=>s.classList.remove('active')); 
+        document.getElementById(id).classList.add('active'); 
+        document.querySelectorAll('.sidebar ul li').forEach(li=>li.classList.remove('active')); 
+        el.classList.add('active'); 
+        if(id === 'dashSection') renderAll();
+    }
+    function switchTab(s, id, b) { 
+        b.parentElement.querySelectorAll('.tab-btn').forEach(x=>x.classList.remove('active')); 
+        b.classList.add('active'); 
+        const tabs = s==='law'?['lawDispute','lawCourt','lawAttack','lawAccident', 'lawAssoc']:['cGen','cDir','cRel','cLic','cInfo']; 
+        tabs.forEach(t=>document.getElementById(t).style.display='none'); 
+        document.getElementById(id).style.display='block'; 
     }
 
-    function del(key, idx) {
-        if(confirm('هل أنت متأكد؟')) {
-            const d = getDB(key); d.splice(idx, 1); saveDB(key, d);
-            location.reload(); 
-        }
-    }
-
-    function exportToExcel(type) {
-        alert('سيتم تصدير ملف Excel لجميع البيانات القانونية حالاً');
-        const wb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(wb, XLSX.utils.table_to_sheet(document.getElementById('lawTable')), "المنازعات");
-        XLSX.utils.book_append_sheet(wb, XLSX.utils.table_to_sheet(document.getElementById('courtTable')), "الدعاوى");
-        XLSX.utils.book_append_sheet(wb, XLSX.utils.table_to_sheet(document.getElementById('attackTable')), "الاعتداءات");
-        XLSX.writeFile(wb, "تقرير_الشؤون_القانونية_2026.xlsx");
-    }
-
-    // --- Initialization ---
-    window.onload = () => {
-        document.getElementById('dateNow').innerText = new Date().toLocaleDateString('ar-MA');
-        initCharts();
-        render('L_Disp', 'lawTableBody', t_law);
-        render('L_Court', 'courtTableBody', t_court);
-        render('L_Atk', 'attackTableBody', t_atk);
-        render('P_Data', 'partTableBody', t_part);
-        render('C_Gen', 'cgTableBody', t_gen);
-        render('C_Dir', 'cdTableBody', t_dir);
-        render('C_Rel', 'crTableBody', t_rel);
+    window.onload = () => { 
+        initCharts(); 
+        renderAll(); 
+        document.getElementById('dateNow').innerText = new Date().toLocaleDateString('ar-MA'); 
     };
 </script>
 </body>
