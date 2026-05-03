@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>المنصة المتكاملة لتدبير المديرية 2026</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root { 
+            --primary: #1a5276; --secondary: #27ae60; --accent: #e67e22;
+            --info: #2980b9; --danger: #c0392b; --sidebar-width: 250px; --bg: #f4f7f6; 
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg); margin: 0; display: flex; color: #333; }
+        
+        /* Sidebar */
+        .sidebar { width: var(--sidebar-width); background: #2c3e50; color: white; height: 100vh; position: fixed; right: 0; top: 0; padding-top: 20px; z-index: 1000; }
+        .sidebar h2 { text-align: center; font-size: 1.1rem; padding: 0 10px 20px; border-bottom: 1px solid #34495e; }
+        .sidebar ul { list-style: none; padding: 0; margin: 0; }
+        .sidebar ul li { padding: 15px 20px; cursor: pointer; border-bottom: 1px solid #34495e; transition: 0.3s; display: flex; align-items: center; gap: 10px; }
+        .sidebar ul li:hover, .sidebar ul li.active { background: var(--primary); }
+
+        /* Content Area */
+        .main-content { flex: 1; margin-right: var(--sidebar-width); padding: 20px; min-height: 100vh; box-sizing: border-box; }
+        header { background: white; padding: 15px 25px; border-radius: 8px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); display: flex; justify-content: space-between; align-items: center; }
+        
+        .section-box { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); margin-bottom: 30px; display: none; }
+        .section-box.active { display: block; }
+
+        /* Form Styling */
+        .form-group { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 15px; }
+        input, select, textarea { padding: 10px; border: 1px solid #ccc; border-radius: 4px; width: 100%; box-sizing: border-box; font-family: inherit; }
+        
+        button { padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .btn-save { background: var(--secondary); color: white; width: 100%; margin-bottom: 10px; }
+        .btn-excel { background: #1d6f42; color: white; display: inline-flex; align-items: center; gap: 5px; font-size: 0.8rem; }
+        .btn-edit { background: #f1c40f; color: #333; margin-left: 5px; padding: 5px 8px; }
+        .btn-delete { background: #e74c3c; color: white; padding: 5px 8px; }
+        
+        /* Table Styling */
+        .table-container { overflow-x: auto; margin-top: 15px; }
+        table { width: 100%; border-collapse: collapse; background: white; font-size: 0.8rem; min-width: 800px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
+        th { background-color: var(--primary); color: white; position: sticky; top: 0; }
+
+        /* Dashboard Charts */
+        .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        .chart-card { background: #fff; padding: 15px; border-radius: 10px; border-top: 4px solid var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); text-align: center; }
+
+        /* Tabs Styling */
+        .tabs { display: flex; gap: 5px; margin-bottom: 15px; border-bottom: 2px solid #eee; }
+        .tab-btn { padding: 10px 20px; cursor: pointer; background: #eee; border: none; border-radius: 5px 5px 0 0; font-weight: bold; }
+        .tab-btn.active { background: var(--info); color: white; }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>مديرية التعليم - الرباط</h2>
+    <ul>
+        <li class="active" onclick="showSection('dashSection', this)">📊 لوحة القيادة</li>
+        <li onclick="showSection('lawSection', this)">⚖️ الشؤون القانونية</li>
+        <li onclick="showSection('partnerSection', this)">🤝 الشراكة</li>
+        <li onclick="showSection('commSection', this)">📢 التواصل</li>
+    </ul>
+</div>
+
+<div class="main-content">
+    <header>
+        <h3 id="currentTitle">📊 لوحة القيادة المجمعة</h3>
+        <div id="dateNow" style="font-weight: bold; color: var(--primary);"></div>
+    </header>
+
+    <!-- 1. DASHBOARD SECTION -->
+    <div id="dashSection" class="section-box active">
+        <div class="charts-grid">
+            <div class="chart-card" style="border-color: var(--primary);">
+                <h4>⚖️ مصلحة الشؤون القانونية</h4>
+                <canvas id="lawChart"></canvas>
+            </div>
+            <div class="chart-card" style="border-color: var(--secondary);">
+                <h4>🤝 اتفاقيات الشراكة</h4>
+                <canvas id="partChart"></canvas>
+            </div>
+            <div class="chart-card" style="border-color: var(--info);">
+                <h4>📢 أنشطة مصلحة التواصل</h4>
+                <canvas id="commChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. LAW SECTION (3 SUB-FIELDS) -->
+    <div id="lawSection" class="section-box">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom:15px;">
+            <h2>⚖️ تدبير الشؤون القانونية</h2>
+            <button class="btn-excel" onclick="exportToExcel('lawAllData')">تصدير التقارير (Excel)</button>
+        </div>
+        
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('law', 'dispute', this)">المنازعات العامة</button>
+            <button class="tab-btn" onclick="switchTab('law', 'court', this)">تتبع الدعاوى القضائية</button>
+            <button class="tab-btn" onclick="switchTab('law', 'attack', this)">الاعتداءات على المؤسسات</button>
+        </div>
+
+        <!-- Law: Disputes -->
+        <div id="lawDispute">
+            <form id="lawForm">
+                <input type="hidden" id="lawEditIndex" value="-1">
+                <div class="form-group">
+                    <input type="date" id="lawDate" required>
+                    <input type="text" id="lawInst" placeholder="المؤسسة المعنية">
+                    <select id="lawLevel"><option value="ابتدائي">ابتدائي</option><option value="إعدادي">إعدادي</option><option value="تأهيلي">تأهيلي</option></select>
+                    <input type="text" id="lawPlaint" placeholder="المشتكي">
+                    <input type="text" id="lawDefen" placeholder="المشتكى عليه">
+                </div>
+                <button type="submit" class="btn-save">حفظ ملف المنازعة +</button>
+            </form>
+            <div class="table-container">
+                <table id="lawTable">
+                    <thead><tr><th>الرقم</th><th>التاريخ</th><th>المؤسسة</th><th>السلك</th><th>المشتكي</th><th>المشتكى عليه</th><th>إجراءات</th></tr></thead>
+                    <tbody id="lawTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Law: Court Cases -->
+        <div id="lawCourt" style="display:none;">
+            <form id="courtForm">
+                <input type="hidden" id="courtEditIndex" value="-1">
+                <div class="form-group">
+                    <input type="text" id="cPlaint" placeholder="المدعي" required>
+                    <input type="text" id="cDefen" placeholder="المدعى عليه" required>
+                    <input type="text" id="cSubj" placeholder="الموضوع">
+                    <input type="text" id="cRep" placeholder="الإنابة">
+                    <input type="text" id="cType" placeholder="نوع المقال">
+                    <input type="text" id="cStatus" placeholder="المآل">
+                    <input type="text" id="cFinal" placeholder="القرار النهائي">
+                </div>
+                <button type="submit" class="btn-save" style="background:var(--info);">حفظ تتبع الدعوى +</button>
+            </form>
+            <div class="table-container">
+                <table id="courtTable">
+                    <thead><tr><th>الرقم</th><th>المدعي</th><th>المدعى عليه</th><th>الموضوع</th><th>الإنابة</th><th>نوع المقال</th><th>المآل</th><th>القرار النهائي</th><th>إجراءات</th></tr></thead>
+                    <tbody id="courtTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Law: Attacks -->
+        <div id="lawAttack" style="display:none;">
+            <form id="attackForm">
+                <input type="hidden" id="attackEditIndex" value="-1">
+                <div class="form-group">
+                    <input type="text" id="atComm" placeholder="الجماعة" required>
+                    <input type="text" id="atInst" placeholder="المؤسسة" required>
+                    <select id="atLevel"><option value="ابتدائي">ابتدائي</option><option value="إعدادي">إعدادي</option><option value="تأهيلي">تأهيلي</option></select>
+                    <input type="date" id="atDate" required>
+                    <input type="text" id="atType" placeholder="نوعية الاعتداء">
+                </div>
+                <input type="text" id="atAction" placeholder="الإجراء المتخذ" style="margin-bottom:10px;">
+                <button type="submit" class="btn-save" style="background:var(--danger);">حفظ ملف الاعتداء +</button>
+            </form>
+            <div class="table-container">
+                <table id="attackTable">
+                    <thead><tr><th>الرقم</th><th>الجماعة</th><th>المؤسسة</th><th>السلك</th><th>التاريخ</th><th>نوعية الاعتداء</th><th>الإجراء المتخذ</th><th>إجراءات</th></tr></thead>
+                    <tbody id="attackTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. PARTNERSHIP SECTION -->
+    <div id="partnerSection" class="section-box">
+        <h2>🤝 اتفاقيات الشراكة</h2>
+        <form id="partForm">
+            <input type="hidden" id="partEditIndex" value="-1">
+            <div class="form-group">
+                <input type="text" id="pSides" placeholder="أطراف الشراكة" required>
+                <input type="text" id="pType" placeholder="نوع الشراكة">
+                <input type="text" id="pSubj" placeholder="الموضوع">
+                <input type="date" id="pStart">
+                <input type="date" id="pEnd">
+            </div>
+            <button type="submit" class="btn-save">حفظ اتفاقية الشراكة +</button>
+        </form>
+        <div class="table-container">
+            <table id="partTable">
+                <thead><tr><th>الرقم</th><th>الأطراف</th><th>النوع</th><th>الموضوع</th><th>البداية</th><th>النهاية</th><th>إجراءات</th></tr></thead>
+                <tbody id="partTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 4. COMMUNICATION SECTION (3 SUB-FIELDS) -->
+    <div id="commSection" class="section-box">
+        <h2>📢 مصلحة التواصل والشراكة</h2>
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('comm', 'cGen', this)">تواصل عام</button>
+            <button class="tab-btn" onclick="switchTab('comm', 'cDir', this)">أنشطة المدير</button>
+            <button class="tab-btn" onclick="switchTab('comm', 'cRel', this)">العلاقة مع الشركاء</button>
+        </div>
+
+        <div id="cGen">
+            <form id="commGForm"><input type="hidden" id="cgIdx" value="-1"><div class="form-group"><input type="date" id="cgDate" required><input type="text" id="cgTopic" placeholder="الموضوع"></div><button type="submit" class="btn-save">حفظ تواصل عام +</button></form>
+            <table id="cgTable"><thead><tr><th>الرقم</th><th>التاريخ</th><th>الموضوع</th><th>إجراءات</th></tr></thead><tbody id="cgTableBody"></tbody></table>
+        </div>
+
+        <div id="cDir" style="display:none;">
+            <form id="dirForm"><input type="hidden" id="cdIdx" value="-1"><div class="form-group"><input type="date" id="cdDate" required><input type="text" id="cdTopic" placeholder="النشاط"></div><button type="submit" class="btn-save">حفظ نشاط المدير +</button></form>
+            <table id="cdTable"><thead><tr><th>الرقم</th><th>التاريخ</th><th>النشاط</th><th>إجراءات</th></tr></thead><tbody id="cdTableBody"></tbody></table>
+        </div>
+
+        <!-- Communication: Partner Relations (ALL FIELDS RESTORED) -->
+        <div id="cRel" style="display:none;">
+            <form id="relForm">
+                <input type="hidden" id="crIdx" value="-1">
+                <div class="form-group">
+                    <input type="date" id="crDate" required>
+                    <input type="text" id="crPartner" placeholder="الشريك" required>
+                    <input type="text" id="crTopic" placeholder="موضوع اللقاء" required>
+                    <input type="text" id="crRecom" placeholder="التوصيات">
+                </div>
+                <button type="submit" class="btn-save" style="background:var(--primary);">حفظ لقاء الشركاء +</button>
+            </form>
+            <div class="table-container">
+                <table id="crTable">
+                    <thead><tr><th>الرقم الترتيبي</th><th>التاريخ</th><th>الشريك</th><th>موضوع اللقاء</th><th>التوصيات</th><th>إجراءات</th></tr></thead>
+                    <tbody id="crTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // --- Data Storage Helpers ---
+    const getDB = (k) => JSON.parse(localStorage.getItem(k)) || [];
+    const saveDB = (k, d) => localStorage.setItem(k, JSON.stringify(d));
+    let charts = {};
+
+    // --- Charts Logic ---
+    function initCharts() {
+        const createCfg = (label, color) => ({
+            type: 'bar',
+            data: { labels: [label], datasets: [{ label: 'العدد الحالي', data: [0], backgroundColor: color }] },
+            options: { scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+        });
+        charts.law = new Chart(document.getElementById('lawChart'), createCfg('القضايا القانونية', '#1a5276'));
+        charts.part = new Chart(document.getElementById('partChart'), createCfg('الشراكات', '#27ae60'));
+        charts.comm = new Chart(document.getElementById('commChart'), createCfg('أنشطة التواصل', '#2980b9'));
+    }
+
+    function updateStats() {
+        const l = getDB('L_Disp').length + getDB('L_Court').length + getDB('L_Atk').length;
+        const p = getDB('P_Data').length;
+        const c = getDB('C_Gen').length + getDB('C_Dir').length + getDB('C_Rel').length;
+        if(charts.law) { charts.law.data.datasets[0].data = [l]; charts.law.update(); }
+        if(charts.part) { charts.part.data.datasets[0].data = [p]; charts.part.update(); }
+        if(charts.comm) { charts.comm.data.datasets[0].data = [c]; charts.comm.update(); }
+    }
+
+    // --- Universal Table Renderer ---
+    function render(key, bodyId, tpl) {
+        const data = getDB(key); const body = document.getElementById(bodyId);
+        body.innerHTML = data.map((item, idx) => tpl(item, idx)).join('');
+        updateStats();
+    }
+
+    // --- Templates ---
+    const t_law = (i, x) => `<tr><td>${x+1}</td><td>${i.date}</td><td>${i.inst}</td><td>${i.level}</td><td>${i.plaint}</td><td>${i.defen}</td><td><button class="btn-edit" onclick="editLaw(${x})">📝</button><button class="btn-delete" onclick="del('L_Disp',${x})">🗑️</button></td></tr>`;
+    const t_court = (i, x) => `<tr><td>${x+1}</td><td>${i.plaint}</td><td>${i.defen}</td><td>${i.subj}</td><td>${i.rep}</td><td>${i.type}</td><td>${i.status}</td><td>${i.final}</td><td><button class="btn-edit" onclick="editCourt(${x})">📝</button><button class="btn-delete" onclick="del('L_Court',${x})">🗑️</button></td></tr>`;
+    const t_atk = (i, x) => `<tr><td>${x+1}</td><td>${i.comm}</td><td>${i.inst}</td><td>${i.level}</td><td>${i.date}</td><td>${i.type}</td><td>${i.action}</td><td><button class="btn-edit" onclick="editAtk(${x})">📝</button><button class="btn-delete" onclick="del('L_Atk',${x})">🗑️</button></td></tr>`;
+    const t_part = (i, x) => `<tr><td>${x+1}</td><td>${i.sides}</td><td>${i.type}</td><td>${i.subj}</td><td>${i.start}</td><td>${i.end}</td><td><button class="btn-edit" onclick="editPart(${x})">📝</button><button class="btn-delete" onclick="del('P_Data',${x})">🗑️</button></td></tr>`;
+    const t_rel = (i, x) => `<tr><td>${x+1}</td><td>${i.date}</td><td>${i.partner}</td><td>${i.topic}</td><td>${i.recom}</td><td><button class="btn-edit" onclick="editRel(${x})">📝</button><button class="btn-delete" onclick="del('C_Rel',${x})">🗑️</button></td></tr>`;
+    const t_gen = (i, x) => `<tr><td>${x+1}</td><td>${i.date}</td><td>${i.topic}</td><td><button class="btn-edit" onclick="editGen(${x})">📝</button><button class="btn-delete" onclick="del('C_Gen',${x})">🗑️</button></td></tr>`;
+    const t_dir = (i, x) => `<tr><td>${x+1}</td><td>${i.date}</td><td>${i.topic}</td><td><button class="btn-edit" onclick="editDir(${x})">📝</button><button class="btn-delete" onclick="del('C_Dir',${x})">🗑️</button></td></tr>`;
+
+    // --- Form Submissions ---
+    document.getElementById('relForm').onsubmit = (e) => {
+        e.preventDefault(); const d = getDB('C_Rel'); const idx = document.getElementById('crIdx').value;
+        const obj = {date:document.getElementById('crDate').value, partner:document.getElementById('crPartner').value, topic:document.getElementById('crTopic').value, recom:document.getElementById('crRecom').value};
+        if(idx==="-1") d.push(obj); else d[idx] = obj;
+        saveDB('C_Rel', d); render('C_Rel', 'crTableBody', t_rel); e.target.reset(); document.getElementById('crIdx').value="-1";
+    };
+
+    document.getElementById('lawForm').onsubmit = (e) => {
+        e.preventDefault(); const d = getDB('L_Disp'); const idx = document.getElementById('lawEditIndex').value;
+        const obj = {date:document.getElementById('lawDate').value, inst:document.getElementById('lawInst').value, level:document.getElementById('lawLevel').value, plaint:document.getElementById('lawPlaint').value, defen:document.getElementById('lawDefen').value};
+        if(idx==="-1") d.push(obj); else d[idx] = obj;
+        saveDB('L_Disp', d); render('L_Disp', 'lawTableBody', t_law); e.target.reset();
+    };
+
+    document.getElementById('courtForm').onsubmit = (e) => {
+        e.preventDefault(); const d = getDB('L_Court'); const idx = document.getElementById('courtEditIndex').value;
+        const obj = {plaint:document.getElementById('cPlaint').value, defen:document.getElementById('cDefen').value, subj:document.getElementById('cSubj').value, rep:document.getElementById('cRep').value, type:document.getElementById('cType').value, status:document.getElementById('cStatus').value, final:document.getElementById('cFinal').value};
+        if(idx==="-1") d.push(obj); else d[idx] = obj;
+        saveDB('L_Court', d); render('L_Court', 'courtTableBody', t_court); e.target.reset();
+    };
+
+    document.getElementById('attackForm').onsubmit = (e) => {
+        e.preventDefault(); const d = getDB('L_Atk'); const idx = document.getElementById('attackEditIndex').value;
+        const obj = {comm:document.getElementById('atComm').value, inst:document.getElementById('atInst').value, level:document.getElementById('atLevel').value, date:document.getElementById('atDate').value, type:document.getElementById('atType').value, action:document.getElementById('atAction').value};
+        if(idx==="-1") d.push(obj); else d[idx] = obj;
+        saveDB('L_Atk', d); render('L_Atk', 'attackTableBody', t_atk); e.target.reset();
+    };
+
+    document.getElementById('partForm').onsubmit = (e) => {
+        e.preventDefault(); const d = getDB('P_Data'); const idx = document.getElementById('partEditIndex').value;
+        const obj = {sides:document.getElementById('pSides').value, type:document.getElementById('pType').value, subj:document.getElementById('pSubj').value, start:document.getElementById('pStart').value, end:document.getElementById('pEnd').value};
+        if(idx==="-1") d.push(obj); else d[idx] = obj;
+        saveDB('P_Data', d); render('P_Data', 'partTableBody', t_part); e.target.reset();
+    };
+
+    document.getElementById('commGForm').onsubmit = (e) => {
+        e.preventDefault(); const d = getDB('C_Gen'); const idx = document.getElementById('cgIdx').value;
+        const obj = {date:document.getElementById('cgDate').value, topic:document.getElementById('cgTopic').value};
+        if(idx==="-1") d.push(obj); else d[idx] = obj;
+        saveDB('C_Gen', d); render('C_Gen', 'cgTableBody', t_gen); e.target.reset();
+    };
+
+    document.getElementById('dirForm').onsubmit = (e) => {
+        e.preventDefault(); const d = getDB('C_Dir'); const idx = document.getElementById('cdIdx').value;
+        const obj = {date:document.getElementById('cdDate').value, topic:document.getElementById('cdTopic').value};
+        if(idx==="-1") d.push(obj); else d[idx] = obj;
+        saveDB('C_Dir', d); render('C_Dir', 'cdTableBody', t_dir); e.target.reset();
+    };
+
+    // --- Logic Helpers ---
+    function switchTab(section, id, btn) {
+        const parent = btn.parentElement;
+        parent.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if(section === 'law') {
+            ['lawDispute', 'lawCourt', 'lawAttack'].forEach(d => document.getElementById(d).style.display = 'none');
+            document.getElementById(id==='dispute'?'lawDispute':id==='court'?'lawCourt':'lawAttack').style.display = 'block';
+        } else {
+            ['cGen', 'cDir', 'cRel'].forEach(d => document.getElementById(d).style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+        }
+    }
+
+    function showSection(id, el) {
+        document.querySelectorAll('.section-box').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.querySelectorAll('.sidebar ul li').forEach(li => li.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('currentTitle').innerText = el.innerText;
+    }
+
+    function del(key, idx) {
+        if(confirm('هل أنت متأكد؟')) {
+            const d = getDB(key); d.splice(idx, 1); saveDB(key, d);
+            location.reload(); 
+        }
+    }
+
+    function exportToExcel(type) {
+        alert('سيتم تصدير ملف Excel لجميع البيانات القانونية حالاً');
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.table_to_sheet(document.getElementById('lawTable')), "المنازعات");
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.table_to_sheet(document.getElementById('courtTable')), "الدعاوى");
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.table_to_sheet(document.getElementById('attackTable')), "الاعتداءات");
+        XLSX.writeFile(wb, "تقرير_الشؤون_القانونية_2026.xlsx");
+    }
+
+    // --- Initialization ---
+    window.onload = () => {
+        document.getElementById('dateNow').innerText = new Date().toLocaleDateString('ar-MA');
+        initCharts();
+        render('L_Disp', 'lawTableBody', t_law);
+        render('L_Court', 'courtTableBody', t_court);
+        render('L_Atk', 'attackTableBody', t_atk);
+        render('P_Data', 'partTableBody', t_part);
+        render('C_Gen', 'cgTableBody', t_gen);
+        render('C_Dir', 'cdTableBody', t_dir);
+        render('C_Rel', 'crTableBody', t_rel);
+    };
+</script>
+</body>
+</html>
